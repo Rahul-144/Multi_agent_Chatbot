@@ -9,6 +9,10 @@ import gc
 import psutil
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Define state
 class AgentState(TypedDict):
@@ -217,7 +221,7 @@ def initialize_system(csv_path: str):
     
     # Set OpenAI API key (replace with your key)
     if "OPENAI_API_KEY" not in os.environ:
-        os.environ["OPENAI_API_KEY"] = ""
+        os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
     
     llm = ChatOpenAI(model="gpt-3.5-turbo")  # Use cheaper model
     

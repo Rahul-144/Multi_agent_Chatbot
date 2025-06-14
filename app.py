@@ -12,6 +12,10 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 import time
 import json
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Page config
 st.set_page_config(
@@ -29,13 +33,14 @@ st.markdown("""
     }
     
     .chat-container {
-        height: 600px;
-        overflow-y: auto;
-        padding: 1rem;
-        border: 1px solid #e0e0e0;
+        height: 0px;
+        overflow-y: hidden;
+        padding: 0rem;
+        border: 0px solid #e0e0e0;
         border-radius: 10px;
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         margin-bottom: 1rem;
+        position: bottom;
     }
     
     .user-message {
@@ -426,9 +431,14 @@ if 'conv_manager' not in st.session_state:
 if 'selected_agent' not in st.session_state:
     st.session_state.selected_agent = None
 
-def initialize_system(csv_path: str, openai_key: str):
+def initialize_system(csv_path: str):
     """Initialize the system"""
-    os.environ["OPENAI_API_KEY"] = openai_key
+    # Get API key from environment variable
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    if not openai_api_key:
+        raise ValueError("OPENAI_API_KEY not found in environment variables")
+    
+    os.environ["OPENAI_API_KEY"] = openai_api_key
     llm = ChatOpenAI(model="gpt-3.5-turbo")
     
     persona_retriever = PersonaRetriever(
@@ -507,19 +517,18 @@ def main():
         
         # System parameters
         st.markdown("### 🔧 System Parameters")
-        max_personas = st.slider("Max Personas", 2, 10, 4)
+        max_personas = st.slider("Max Personas", 1, 4)
         max_rows = st.slider("Max Rows per Persona", 500, 2000, 1000)
         
         # Initialize system button
         if st.button("🚀 Initialize System", type="primary"):
             with st.spinner("Initializing system..."):
                 try:
-                    # Use existing CSV file and OpenAI key
+                    # Use existing CSV file
                     csv_path = 'cleaned_data.csv'
-                    openai_key = ""
                     
                     # Initialize system
-                    llm, persona_retriever = initialize_system(csv_path, openai_key)
+                    llm, persona_retriever = initialize_system(csv_path)
                     graph, personas = build_graph(llm, persona_retriever)
                     
                     # Create conversation manager
@@ -571,7 +580,7 @@ def main():
                 ):
                     st.session_state.selected_agent = persona
                     st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
+        # st.markdown('</div>', unsafe_allow_html=True)
 
         # Chat container
         chat_container = st.container()
@@ -598,7 +607,7 @@ def main():
         
         # Input form
         with st.form(key="chat_form", clear_on_submit=True):
-            col1, col2 = st.columns([4, 1])
+            col1, col2 = st.columns([2, 1])
             
             with col1:
                 user_input = st.text_input(
