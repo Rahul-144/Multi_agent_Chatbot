@@ -516,7 +516,7 @@ def main():
                 try:
                     # Use existing CSV file and OpenAI key
                     csv_path = 'cleaned_data.csv'
-                    openai_key = "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"
+                    openai_key = ""
                     
                     # Initialize system
                     llm, persona_retriever = initialize_system(csv_path, openai_key)
