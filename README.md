@@ -27,6 +27,32 @@ This project uses the Cornell Movie-Dialogs Corpus dataset:
 }
 ```
 
+## Data Preprocessing
+
+The raw movie dialogue dataset undergoes several preprocessing steps to prepare it for the multi-agent chat system:
+
+1. **Text Cleaning**
+   - Removal of special characters and formatting
+   - Standardization of punctuation and spacing
+   - Basic spell checking and correction
+
+2. **Dialogue Extraction**
+   - Parsing of character-dialogue pairs
+   - Conversation thread reconstruction
+   - Speaker identification and mapping
+
+3. **Feature Engineering**
+   - Sentiment analysis of dialogues
+   - Character personality trait extraction
+   - Conversation context labeling
+
+4. **Data Formatting**
+   - Conversion to structured format for RAG
+   - Creation of FAISS-compatible embeddings
+   - Generation of training examples for each persona
+
+[Processed Dataset Link - Coming Soon]
+
 ## Requirements
 
 - Python 3.8+
